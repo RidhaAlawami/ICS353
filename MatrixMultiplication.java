@@ -184,5 +184,45 @@ public class traditional_multiplication {
 			return Decimal;
 		}
 		
+    		//closet 2^x number to a given input 
+		private static int ClosestPowerOF2(int n){
+			
+			int closestNumber = 0; 
+			
+			double LogOfTheInput = Math.log(n) / Math.log(2);
+			
+			double roundDown = Math.round(LogOfTheInput);
+			
+			double roundUp = Math.round(LogOfTheInput) + 1;
+			
+			double power2OfRoundDown = Math.pow(roundDown, 2);
+			double power2OfRoundUp = Math.pow(roundUp, 2);
+			
+			double distance1 = power2OfRoundDown - n;
+			double distance2 = power2OfRoundUp - n; 
+			
+			
+			if(!PowerOfTwoOrNot((int)power2OfRoundDown))
+				power2OfRoundDown--;
+			
+			if(!PowerOfTwoOrNot((int)power2OfRoundUp))
+				power2OfRoundUp--;
+			
+			System.out.println(roundDown);
+			System.out.println(roundUp);
+			
+			System.out.println(power2OfRoundDown);
+			System.out.println(power2OfRoundUp);
+			
+			System.out.println(distance1);
+			System.out.println(distance2);
+			
+			
+			return closestNumber; 
+		}
+		
+		
+		//check if the number is power of two
+		private static boolean PowerOfTwoOrNot(int power2Round){
 
 }

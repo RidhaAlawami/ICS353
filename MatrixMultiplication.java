@@ -216,6 +216,11 @@ public class traditional_multiplication {
 			
 			System.out.println(distance1);
 			System.out.println(distance2);
+            
+            if(distance1 > distance2)
+				closestNumber = (int)power2OfRoundUp;
+			else
+				closestNumber = (int)power2OfRoundDown;
 			
 			
 			return closestNumber; 

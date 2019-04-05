@@ -1,56 +1,46 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Scanner;
 
-public class traditional_multiplication {
+public class MatrixMultiplication {
 
-	static int [][] matrixC;
-	static int [][] matrixA;
-	static int [][] matrixB;
+	//matrcies and the result matrix 
+	 int [][] matrixC;
+	 int [][] matrixA;
+	 int [][] matrixB;
+	 
+	 //matrix splits
+	 int [][] A11;
+	 int [][] A12;
+	 int [][] A21;
+	 int [][] A22; 
+		
+	//matrix B
+	 int [][] B11;
+	 int [][] B12;
+	 int [][] B21;
+	 int [][] B22;
+	 
+	// 10 matrcies contain the sum and subtract of the above splits 
+	 int [][] S1;
+	 int [][] S2;
+	 int [][] S3;
+	 int [][] S4;
+	 int [][] S5;
+	 int [][] S6;
+	 int [][] S7;
+	 int [][] S8;
+	 int [][] S9;
+	 int [][] S10;
+
 	
-	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
+	MatrixMultiplication (int [][] matrixA , int [][] matrixB){
 		
-		int n;	
-	
-		//matrix multiplication from file
-		String input_file_name = "", output_file_name = "";
-		Scanner kb = new Scanner(System.in);
+		this.matrixA = matrixA;
+		this.matrixB = matrixB;
 		
-		System.out.println("Input format: n *space* InputFileName.txt *space* OutputFileName.txt");
-		System.out.println("1011 input_file_name.txt OutputFileName.txt");
-		
-		n = kb.nextInt();
-		input_file_name = kb.next();
-		output_file_name = kb.next();
-		
-		System.out.println("input " +  input_file_name);
-		System.out.println("output " + output_file_name);
-		System.out.println("size " + n + " " + ConvertToDecimal(n));
-		
-		matrixA = matrix(ConvertToDecimal(n), input_file_name);
-		matrixB = matrix(ConvertToDecimal(n), input_file_name);
-		
-		matrixC = IterativeMultiplication(matrixA, matrixB,ConvertToDecimal(n));
-		
-		writeToFile(output_file_name, matrixC, ConvertToDecimal(n));
-		PrintArray(matrixA);
-		PrintArray(matrixB);
-		PrintArray(matrixC);
-
 	}
-
 	
 	
-	//matrix c size will derived from the user input n 
-	//where matrixA n x n and matrixB n x n 
-	//thus matrixC n x n 
-	// the product of two matrices => matrixC(m,n) = matrixA(m,k) * matrixB(k,n)
-	public static int [][] IterativeMultiplication(int matrixA[][], int matrixB[][], int n){
+	//matrix itterative
+	public int [][] IterativeMultiplication(int matrixA[][], int matrixB[][], int n){
 		matrixC = new int[n][n];
 		for(int row = 0; row < n; row++){
 			for(int column = 0; column < n; column++){
@@ -64,170 +54,188 @@ public class traditional_multiplication {
 		return matrixC;
 	}
 	
-	
-	//write the answer to external file
-	public static void writeToFile(String fileName, int matrixC [][],  int n) throws IOException{
+	/// Strassen base 1
+	public int [][] StrassenB1(int matrixA[][], int matrixB[][]){
 		
-		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-		writer.write("iterative matrix multiplication result of "+n +"*" +  ":\n");
-		writer.newLine();
+		//matrix dimension
+		int n = matrixA.length;
 		
-		//print the matrixC as 
-		/*
-		 * 2 * 2 matrix 
-		 * 1   2
-		 * 4   5
-		 * 
-		 */
-		for(int row = 0; row < n; row++){
-			for(int column = 0; column < n; column++){
-				writer.write(matrixC[row][column] + " ");
-			}
-			writer.newLine();
+		if(n == 1)
+			matrixC[0][0] = matrixA[0][0] * matrixB[0][0];
+		else{
+			//step 1
+			splitTheMatrix(n);
+			
+			//step 2 
+			create10Matrcies();
+			
+			//step 3
+			int [][] P1 = StrassenB1(A11,S1);
+			int [][] P2 = StrassenB1(S2,B22);
+			int [][] P3 = StrassenB1(S3,B11);
+			int [][] P4 = StrassenB1(A22,S4);
+			int [][] P5 = StrassenB1(S5,S6);
+			int [][] P6 = StrassenB1(S7,S8);
+			int [][] P7 = StrassenB1(S9,S10);
+			
+			//step 4
+			int [][] C11 = subtract(add(P5,P4),add(P2,P6));
+			int [][] C12 = add(P1,P2);
+			int [][] C21 = add(P3,P2);
+			int [][] C22 = subtract(add(P5,P1),subtract(P3,P7)); 
+			
+			//step 5
+			join(C11, matrixC, 0, 0);
+			join(C12, matrixC, 0, n/2);
+			join(C21, matrixC, n/2, 0);
+			join(C22, matrixC, n/2, n/2);
+			
 		}
 		
 		
-		writer.close();	
+		
+		return matrixC;
 	}
 	
-	
-	//This methods adds 1 to the array row and column.
-		//and returns a new array
-		//assuming its a matrix.
-		public static int[][] AddPadding(int[][] array){
-			int[][] my_padded_array = null;
-			if(array == null || array.length == 0)
-				return array;
-			
-			else {
-				int array_size = array.length + 1;
-				
-				my_padded_array = new int[array_size][array_size];
-				
-				for(int i = 0; i < array.length; i++) {
-					for(int j = 0; j < array[i].length; j++) {
-						my_padded_array[i][j] = array[i][j];
-					}
-				}	
-			}
-			
-			return my_padded_array;
-		}
+	//Strassen Bigger than 1
+	public int [][] Strassen(int matrixA[][], int matrixB[][], int baseCase){
 		
-		//This methods removes 1 from the array row and column.
-		//and returns a new array
-		//assuming its a matrix.
-		public static int[][] RemovePadding(int[][] array){
-			int[][] my_unpadded_array = null;
-			if(array == null || array.length == 0)
-				return array;
+		//matrix dimension
+		int n = matrixA.length;
+		
+		if(n <= baseCase)
+			IterativeMultiplication(matrixA, matrixB,n);
+		else{
+			//step 1
+			splitTheMatrix(n);
 			
-			else {
-				int array_size = array.length - 1;
-				
-				my_unpadded_array = new int[array_size][array_size];
-				for(int i = 0; i < array_size; i++) {
-					for(int j = 0; j < array_size; j++) {
-						my_unpadded_array[i][j] = array[i][j];
-					}
-				}	
-			}
-			return my_unpadded_array;
+			//step 2 
+			create10Matrcies();
+			
+			//step 3
+			int [][] P1 = StrassenB1(A11,S1);
+			int [][] P2 = StrassenB1(S2,B22);
+			int [][] P3 = StrassenB1(S3,B11);
+			int [][] P4 = StrassenB1(A22,S4);
+			int [][] P5 = StrassenB1(S5,S6);
+			int [][] P6 = StrassenB1(S7,S8);
+			int [][] P7 = StrassenB1(S9,S10);
+			
+			//step 4
+			int [][] C11 = subtract(add(P5,P4),add(P2,P6));
+			int [][] C12 = add(P1,P2);
+			int [][] C21 = add(P3,P2);
+			int [][] C22 = subtract(add(P5,P1),subtract(P3,P7)); 
+			
+			//step 5
+			join(C11, matrixC, 0, 0);
+			join(C12, matrixC, 0, n/2);
+			join(C21, matrixC, n/2, 0);
+			join(C22, matrixC, n/2, n/2);
+			
 		}
 		
 		
-		//returns a matrix read from the file and stored in the array
-		//it reads up to n rows and n columns if there are no values they are assigned to 0.
-		private static int[][] matrix(int array_size, String input_file_name){
-			int[][] array = new int[array_size][array_size];
-			
-			try {
-				Scanner inputFile = new Scanner(new File(input_file_name));
-				for(int i = 0; i < array_size; i++) {
-					for(int j = 0; j < array_size; j++) {
-						array[i][j] = inputFile.nextInt();
-					}	
-				}
-				
-				inputFile.close();
-				
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Could not find a file named " + input_file_name);
-			}
-			return array;
-		}
 		
+		return matrixC;
+	}
 
+	
+	//split the matrix to n/2 
+	private void splitTheMatrix(int n){
+		//matrix A
+		A11 = new int[n/2][n/2];
+		A12 = new int[n/2][n/2];
+		A21 = new int[n/2][n/2];
+		A22 = new int[n/2][n/2];
 		
-		//print the array 
-		private static void PrintArray(int[][] array) {
-			System.out.println(Arrays.deepToString(array));
-		}
+		//matrix B
+		B11 = new int[n/2][n/2];
+		B12 = new int[n/2][n/2];
+		B21 = new int[n/2][n/2];
+		B22 = new int[n/2][n/2];
+		
+		//fill the matrices AXX
+		split(matrixA, A11, 0, 0);
+		split(matrixA, A12, 0, n/2);
+		split(matrixA, A21, n/2, 0);
+		split(matrixA, A22, n/2, n/2);
+		
+		//fill the matrices BXX
+		split(matrixB, B11, 0, 0);
+		split(matrixB, B12, 0, n/2);
+		split(matrixB, B21, n/2, 0);
+		split(matrixB, B22, n/2, n/2);		
+		
+	}
 	
+	//create the 10 matrix sum and subtract of the split matrices 
+	private void create10Matrcies(){
+		 S1 = subtract(B12,B22);
+		 S2 = add(A11,A12);
+		 S3 = add(A21,A22);
+		 S4 = subtract(B21,B11);
+		 S5 = add(A11,A22);
+		 S6 = add(B11,B22);
+		 S7 = subtract(A12,A22);
+		 S8 = add(B21,B22);
+		 S9 = subtract(A11,A21);
+		 S10 = add(B11,B12);
+		
+	}
 	
-		//convert binary to decimal 
-		private static int ConvertToDecimal(int n){
-			
-			int Decimal = 0;
-			int power = 0;
-			
-			while(n != 0){
-				int reminder = n%10;
-				Decimal +=  reminder * Math.pow(2, power);
-				
-				n = n / 10;
-				power++;
+	//add matrices
+	private int [][] add(int [][] matrix1, int [][] matrix2){
+		
+		int n = matrix1.length;
+		int [][] resultMatrix = new int[n][n];
+		
+		for(int row = 0; row < n; row++){
+			for(int column = 0; column < n; column++){
+				resultMatrix [row][column] = matrix1[row][column] + matrix1[row][column]; 
 			}
+		}
+		
+		
+		
+		return resultMatrix ;
+				
+	}
+	
+	//subtract matrices
+	private int [][] subtract(int [][] matrix1, int [][] matrix2){
+		
+		int n = matrix1.length;
+		int [][] resultMatrix = new int[n][n];
+		
+		for(int row = 0; row < n; row++){
+			for(int column = 0; column < n; column++){
+				resultMatrix [row][column] = matrix1[row][column] - matrix1[row][column]; 
+			}
+		}
+		
+		return resultMatrix ;
+				
+	}
+	
+	//split matrix 
+	private void split(int[][] original, int[][] split, int rowSplit, int columnSplit)
+	{
+		for(int row = 0, row2 = rowSplit; row < original.length; row++, row2++)
+			for(int column = 0, column2 = columnSplit; column < original.length; column++, column2++)
+			{
+				original[row][column] = split[row2][column2];
+			}
+	}
 
-			
-			return Decimal;
-		}
-		
-    		//closet 2^x number to a given input 
-		private static int ClosestPowerOF2(int n){
-			
-			int closestNumber = 0; 
-			
-			double LogOfTheInput = Math.log(n) / Math.log(2);
-			
-			double roundDown = Math.round(LogOfTheInput);
-			
-			double roundUp = Math.round(LogOfTheInput) + 1;
-			
-			double power2OfRoundDown = Math.pow(roundDown, 2);
-			double power2OfRoundUp = Math.pow(roundUp, 2);
-			
-			double distance1 = power2OfRoundDown - n;
-			double distance2 = power2OfRoundUp - n; 
-			
-			
-			if(!PowerOfTwoOrNot((int)power2OfRoundDown))
-				power2OfRoundDown--;
-			
-			if(!PowerOfTwoOrNot((int)power2OfRoundUp))
-				power2OfRoundUp--;
-			
-			System.out.println(roundDown);
-			System.out.println(roundUp);
-			
-			System.out.println(power2OfRoundDown);
-			System.out.println(power2OfRoundUp);
-			
-			System.out.println(distance1);
-			System.out.println(distance2);
-            
-            if(distance1 > distance2)
-				closestNumber = (int)power2OfRoundUp;
-			else
-				closestNumber = (int)power2OfRoundDown;
-			
-			
-			return closestNumber; 
-		}
-		
-		
-		//check if the number is power of two
-		private static boolean PowerOfTwoOrNot(int power2Round){
+	//join matrices
+	private void join(int[][] original, int[][] split, int rowSplit, int columnSplit)
+	{
+		for(int row = 0, row2 = rowSplit; row < original.length; row++, row2++)
+			for(int column = 0, column2 = columnSplit; column < original.length; column++, column2++)
+			{
+				split[row2][column2] = original[row][column];
+			}
+	}
 
 }

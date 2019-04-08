@@ -21,11 +21,11 @@ public class driver {
 		input_file_name = kb.next();
 
 		// get matrix A and matrix B
-		Matrices readMatrcies = matrix(n, input_file_name);
+		Matrices readMatrcies = matrix(ConvertToDecimal(n), input_file_name);
 
 		readMatrcies.printBothArrays();
 
-		MatrixMultiplication inputMatrices = new MatrixMultiplication(readMatrcies.getMatrixA(),readMatrcies.getMatrixB(), n);
+		MatrixMultiplication inputMatrices = new MatrixMultiplication(readMatrcies.getMatrixA(),readMatrcies.getMatrixB(), ConvertToDecimal(n));
 		int[][] iterativeResults = inputMatrices.IterativeMultiplication();
 		System.out.println("IterativeMultiplication");
 		for (int i = 0; i < iterativeResults.length; i++) {
@@ -123,4 +123,27 @@ public class driver {
 
 		writer.close();
 	}
+	
+	
+	
+		//convert binary to decimal 
+		private static int ConvertToDecimal(int n){
+
+	 			int Decimal = 0;
+				int power = 0;
+
+	 			while(n != 0){
+					int reminder = n%10;
+					Decimal +=  reminder * Math.pow(2, power);
+
+	 				n = n / 10;
+					power++;
+				}
+
+
+	 			return Decimal;
+			}
+	
+	
+	
 }

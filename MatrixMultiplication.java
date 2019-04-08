@@ -5,7 +5,7 @@ public class MatrixMultiplication {
 
 	private int[][] matrixA;
 	private int[][] matrixB;
-	private int[][] matrixC;
+	//private int[][] matrixC;
 
 	// matrix splits
 	private int[][] A11;
@@ -39,7 +39,7 @@ public class MatrixMultiplication {
 
 	// matrix iterative
 	public int[][] IterativeMultiplication() {
-		matrixC = new int[matrixSize][matrixSize];
+		int [][] matrixC = new int[matrixSize][matrixSize];
 		for (int row = 0; row < matrixSize; row++) {
 			for (int column = 0; column < matrixSize; column++) {
 				matrixC[row][column] = 0;
@@ -53,11 +53,14 @@ public class MatrixMultiplication {
 	}
 
 	/// Strassen base 1
-	public int[][] StrassenB1(int matrixA[][], int matrixB[][]) {
-		// matrix dimension
+	public int[][] StrassenB1(int [][] matrixA, int [][] matrixB) {
+		this.matrixA = matrixA;
+		this.matrixB = matrixB;
 		int n = matrixA.length;
-		if (n == 1)
+		int [][] matrixC = new int[n][n];
+		if (n == 1){
 			matrixC[0][0] = matrixA[0][0] * matrixB[0][0];
+		}
 		else {
 			// step 1
 			splitTheMatrix(n);
@@ -73,7 +76,9 @@ public class MatrixMultiplication {
 			int[][] P5 = StrassenB1(S5, S6);
 			int[][] P6 = StrassenB1(S7, S8);
 			int[][] P7 = StrassenB1(S9, S10);
-
+			
+			
+			
 			// step 4
 			int[][] C11 = subtract(add(P5, P4), add(P2, P6));
 			int[][] C12 = add(P1, P2);
@@ -91,17 +96,23 @@ public class MatrixMultiplication {
 
 	// Strassen Bigger than 1
 	public int[][] Strassen(int matrixA[][], int matrixB[][], int baseCase) {
+		this.matrixA = matrixA;
+		this.matrixB = matrixB;
 		// matrix dimension
 		int n = matrixA.length;
+		int [][] matrixC = new int[n][n];
+		
 		if (n <= baseCase)
 			matrixC = IterativeMultiplication();
 		else {
 			// step 1
 			splitTheMatrix(n);
+			
 
 			// step 2
 			create10Matrcies();
-
+			
+			
 			// step 3
 			int[][] P1 = StrassenB1(A11, S1);
 			int[][] P2 = StrassenB1(S2, B22);
@@ -111,6 +122,7 @@ public class MatrixMultiplication {
 			int[][] P6 = StrassenB1(S7, S8);
 			int[][] P7 = StrassenB1(S9, S10);
 
+			
 			// step 4
 			int[][] C11 = subtract(add(P5, P4), add(P2, P6));
 			int[][] C12 = add(P1, P2);
@@ -169,14 +181,14 @@ public class MatrixMultiplication {
 	}
 
 	// add matrices
-	private int[][] add(int[][] matrix1, int[][] matrix2) {
+	private int[][] add(int [][] matrix1, int [][] matrix2) {
 
 		int n = matrix1.length;
-		int[][] resultMatrix = new int[n][n];
+		int [][] resultMatrix = new int[n][n];
 
 		for (int row = 0; row < n; row++) {
 			for (int column = 0; column < n; column++) {
-				resultMatrix[row][column] = matrix1[row][column] + matrix1[row][column];
+				resultMatrix[row][column] = matrix1[row][column] + matrix2[row][column];
 			}
 		}
 
@@ -192,7 +204,7 @@ public class MatrixMultiplication {
 
 		for (int row = 0; row < n; row++) {
 			for (int column = 0; column < n; column++) {
-				resultMatrix[row][column] = matrix1[row][column] - matrix1[row][column];
+				resultMatrix[row][column] = matrix1[row][column] - matrix2[row][column];
 			}
 		}
 
@@ -210,10 +222,11 @@ public class MatrixMultiplication {
 
 	// join matrices
 	private void join(int[][] split, int[][] original, int rowSplit, int columnSplit) {
-		for (int row = 0, row2 = rowSplit; row < split.length; row++, row2++)
+		for (int row = 0, row2 = rowSplit; row < split.length; row++, row2++){
 			for (int column = 0, column2 = columnSplit; column < split.length; column++, column2++) {
 				original[row2][column2] = split[row][column];
 			}
+		}
 	}
 
 }

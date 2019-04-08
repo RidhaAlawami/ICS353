@@ -157,6 +157,13 @@ public class MatrixMultiplication {
 		split(matrixA, A12, 0, n / 2);
 		split(matrixA, A21, n / 2, 0);
 		split(matrixA, A22, n / 2, n / 2);
+		System.out.println("A11 hererererer");
+		for (int i = 0; i < A11.length; i++) {
+			for (int j = 0; j < A11[i].length; j++) {
+				System.out.print(A11[i][j] + "\t");
+			}
+			System.out.println();
+		}
 
 		// fill the matrices BXX
 		split(matrixB, B11, 0, 0);
@@ -168,6 +175,14 @@ public class MatrixMultiplication {
 	// create the 10 matrix sum and subtract of the split matrices
 	private void create10Matrcies() {
 		S1 = subtract(B12, B22);
+		System.out.println("S1 hererererer");
+		for (int i = 0; i < S1.length; i++) {
+			for (int j = 0; j < S1[i].length; j++) {
+				System.out.print(S1[i][j] + "\t");
+			}
+			System.out.println();
+		}
+		
 		S2 = add(A11, A12);
 		S3 = add(A21, A22);
 		S4 = subtract(B21, B11);

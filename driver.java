@@ -41,21 +41,27 @@ public class driver {
 
 		int b = kb.nextInt();
 		
-		int[][] strassenResults = inputMatrices.Strassen(readMatrcies.getMatrixA(),readMatrcies.getMatrixB(), b);
-		readMatrcies.setMatrixC(strassenResults);
-		System.out.println("Strassen");
-		for (int i = 0; i < strassenResults.length; i++) {
-			for (int j = 0; j < strassenResults[i].length; j++) {
-				System.out.print(strassenResults[i][j] + "\t");
-			}
-			System.out.println();
-		}
+//		int[][] strassenResults = inputMatrices.Strassen(readMatrcies.getMatrixA(),readMatrcies.getMatrixB(), b);
+//		readMatrcies.setMatrixC(strassenResults);
+//		System.out.println("Strassen");
+//		for (int i = 0; i < strassenResults.length; i++) {
+//			for (int j = 0; j < strassenResults[i].length; j++) {
+//				System.out.print(strassenResults[i][j] + "\t");
+//			}
+//			System.out.println();
+//		}
 //		readMatrcies.printMatrixC();
-		
 		int[][] strassenB1Results = inputMatrices.StrassenB1(readMatrcies.getMatrixA(),readMatrcies.getMatrixB());
 		readMatrcies.setMatrixC(strassenB1Results);
 		System.out.println("StrassenB1");
 		readMatrcies.printMatrixC();
+		
+		for (int i = 0; i < strassenB1Results.length; i++) {
+			for (int j = 0; j < strassenB1Results[i].length; j++) {
+				System.out.print(strassenB1Results[i][j] + "\t");
+			}
+			System.out.println();
+		}
 		
 	}
 

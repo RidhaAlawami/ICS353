@@ -7,29 +7,6 @@ public class MatrixMultiplication {
 	private int[][] matrixB;
 	//private int[][] matrixC;
 
-	// matrix splits
-	private int[][] A11;
-	private int[][] A12;
-	private int[][] A21;
-	private int[][] A22;
-
-	// matrix B
-	private int[][] B11;
-	private int[][] B12;
-	private int[][] B21;
-	private int[][] B22;
-
-	// 10 matrcies contain the sum and subtract of the above splits
-	private int[][] S1;
-	private int[][] S2;
-	private int[][] S3;
-	private int[][] S4;
-	private int[][] S5;
-	private int[][] S6;
-	private int[][] S7;
-	private int[][] S8;
-	private int[][] S9;
-	private int[][] S10;
 
 	public MatrixMultiplication(int[][] matrixA, int[][] matrixB, int matrixSize) {
 		this.matrixA = matrixA;
@@ -54,19 +31,55 @@ public class MatrixMultiplication {
 
 	/// Strassen base 1
 	public int[][] StrassenB1(int [][] matrixA, int [][] matrixB) {
-		this.matrixA = matrixA;
-		this.matrixB = matrixB;
+		
 		int n = matrixA.length;
+		
 		int [][] matrixC = new int[n][n];
+		
+		
 		if (n == 1){
 			matrixC[0][0] = matrixA[0][0] * matrixB[0][0];
 		}
 		else {
-			// step 1
-			splitTheMatrix(n);
+			//step 1
+			//matrix A
+			int[][] A11 = new int[n / 2][n / 2];
+			int[][] A12 = new int[n / 2][n / 2];
+			int[][] A21 = new int[n / 2][n / 2];
+			int[][] A22 = new int[n / 2][n / 2];
+			
+			//matrix B
+			int[][] B11 = new int[n / 2][n / 2];
+			int[][] B12 = new int[n / 2][n / 2];
+			int[][] B21 = new int[n / 2][n / 2];
+			int[][] B22 = new int[n / 2][n / 2];
+			
+			//fill the matrices AXX
+			split(matrixA, A11, 0, 0);
+			split(matrixA, A12, 0, n / 2);
+			split(matrixA, A21, n / 2, 0);
+			split(matrixA, A22, n / 2, n / 2);
+		
+
+			//fill the matrices BXX
+			split(matrixB, B11, 0, 0);
+			split(matrixB, B12, 0, n / 2);
+			split(matrixB, B21, n / 2, 0);
+			split(matrixB, B22, n / 2, n / 2);
+			
 
 			// step 2
-			create10Matrcies();
+			//create 10 matrices 
+			int[][] S1 = subtract(B12, B22);
+			int[][] S2 = add(A11, A12);
+			int[][] S3 = add(A21, A22);
+			int[][] S4 = subtract(B21, B11);
+			int[][] S5 = add(A11, A22);
+			int[][] S6 = add(B11, B22);
+			int[][] S7 = subtract(A12, A22);
+			int[][] S8 = add(B21, B22);
+			int[][] S9 = subtract(A11, A21);
+			int[][] S10 = add(B11, B12);
 
 			// step 3
 			int[][] P1 = StrassenB1(A11, S1);
@@ -82,7 +95,7 @@ public class MatrixMultiplication {
 			// step 4
 			int[][] C11 = subtract(add(P5, P4), add(P2, P6));
 			int[][] C12 = add(P1, P2);
-			int[][] C21 = add(P3, P2);
+			int[][] C21 = add(P3, P4);
 			int[][] C22 = subtract(add(P5, P1), subtract(P3, P7));
 
 			// step 5
@@ -96,37 +109,70 @@ public class MatrixMultiplication {
 
 	// Strassen Bigger than 1
 	public int[][] Strassen(int matrixA[][], int matrixB[][], int baseCase) {
-		this.matrixA = matrixA;
-		this.matrixB = matrixB;
+
 		// matrix dimension
 		int n = matrixA.length;
+		
 		int [][] matrixC = new int[n][n];
 		
 		if (n <= baseCase)
 			matrixC = IterativeMultiplication();
 		else {
 			// step 1
-			splitTheMatrix(n);
+			//matrix A
+			int[][] A11 = new int[n / 2][n / 2];
+			int[][] A12 = new int[n / 2][n / 2];
+			int[][] A21 = new int[n / 2][n / 2];
+			int[][] A22 = new int[n / 2][n / 2];
+			
+			//matrix B
+			int[][] B11 = new int[n / 2][n / 2];
+			int[][] B12 = new int[n / 2][n / 2];
+			int[][] B21 = new int[n / 2][n / 2];
+			int[][] B22 = new int[n / 2][n / 2];
+			
+			// fill the matrices AXX
+			split(matrixA, A11, 0, 0);
+			split(matrixA, A12, 0, n / 2);
+			split(matrixA, A21, n / 2, 0);
+			split(matrixA, A22, n / 2, n / 2);
+		
+
+			// fill the matrices BXX
+			split(matrixB, B11, 0, 0);
+			split(matrixB, B12, 0, n / 2);
+			split(matrixB, B21, n / 2, 0);
+			split(matrixB, B22, n / 2, n / 2);
 			
 
 			// step 2
-			create10Matrcies();
-			
+			//create10Matrcies();
+			//create 10 matrices
+			int[][] S1 = subtract(B12, B22);
+			int[][] S2 = add(A11, A12);
+			int[][] S3 = add(A21, A22);
+			int[][] S4 = subtract(B21, B11);
+			int[][] S5 = add(A11, A22);
+			int[][] S6 = add(B11, B22);
+			int[][] S7 = subtract(A12, A22);
+			int[][] S8 = add(B21, B22);
+			int[][] S9 = subtract(A11, A21);
+			int[][] S10 = add(B11, B12);
 			
 			// step 3
-			int[][] P1 = StrassenB1(A11, S1);
-			int[][] P2 = StrassenB1(S2, B22);
-			int[][] P3 = StrassenB1(S3, B11);
-			int[][] P4 = StrassenB1(A22, S4);
-			int[][] P5 = StrassenB1(S5, S6);
-			int[][] P6 = StrassenB1(S7, S8);
-			int[][] P7 = StrassenB1(S9, S10);
+			int[][] P1 = Strassen(A11, S1,baseCase);
+			int[][] P2 = Strassen(S2, B22,baseCase);
+			int[][] P3 = Strassen(S3, B11,baseCase);
+			int[][] P4 = Strassen(A22, S4,baseCase);
+			int[][] P5 = Strassen(S5,  S6,baseCase);
+			int[][] P6 = Strassen(S7,  S8,baseCase);
+			int[][] P7 = Strassen(S9, S10,baseCase);
 
 			
 			// step 4
 			int[][] C11 = subtract(add(P5, P4), add(P2, P6));
 			int[][] C12 = add(P1, P2);
-			int[][] C21 = add(P3, P2);
+			int[][] C21 = add(P3, P4);
 			int[][] C22 = subtract(add(P5, P1), subtract(P3, P7));
 
 			// step 5
@@ -135,65 +181,14 @@ public class MatrixMultiplication {
 			join(C21, matrixC, n / 2, 0);
 			join(C22, matrixC, n / 2, n / 2);
 		}
+		
+		
+		
 		return matrixC;
 	}
 
-	// split the matrix to n/2
-	private void splitTheMatrix(int n) {
-		// matrix A
-		A11 = new int[n / 2][n / 2];
-		A12 = new int[n / 2][n / 2];
-		A21 = new int[n / 2][n / 2];
-		A22 = new int[n / 2][n / 2];
 
-		// matrix B
-		B11 = new int[n / 2][n / 2];
-		B12 = new int[n / 2][n / 2];
-		B21 = new int[n / 2][n / 2];
-		B22 = new int[n / 2][n / 2];
-
-		// fill the matrices AXX
-		split(matrixA, A11, 0, 0);
-		split(matrixA, A12, 0, n / 2);
-		split(matrixA, A21, n / 2, 0);
-		split(matrixA, A22, n / 2, n / 2);
-		System.out.println("A11 hererererer");
-		for (int i = 0; i < A11.length; i++) {
-			for (int j = 0; j < A11[i].length; j++) {
-				System.out.print(A11[i][j] + "\t");
-			}
-			System.out.println();
-		}
-
-		// fill the matrices BXX
-		split(matrixB, B11, 0, 0);
-		split(matrixB, B12, 0, n / 2);
-		split(matrixB, B21, n / 2, 0);
-		split(matrixB, B22, n / 2, n / 2);
-	}
-
-	// create the 10 matrix sum and subtract of the split matrices
-	private void create10Matrcies() {
-		S1 = subtract(B12, B22);
-		System.out.println("S1 hererererer");
-		for (int i = 0; i < S1.length; i++) {
-			for (int j = 0; j < S1[i].length; j++) {
-				System.out.print(S1[i][j] + "\t");
-			}
-			System.out.println();
-		}
-		
-		S2 = add(A11, A12);
-		S3 = add(A21, A22);
-		S4 = subtract(B21, B11);
-		S5 = add(A11, A22);
-		S6 = add(B11, B22);
-		S7 = subtract(A12, A22);
-		S8 = add(B21, B22);
-		S9 = subtract(A11, A21);
-		S10 = add(B11, B12);
-
-	}
+	
 
 	// add matrices
 	private int[][] add(int [][] matrix1, int [][] matrix2) {

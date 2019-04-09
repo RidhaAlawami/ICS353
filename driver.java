@@ -26,7 +26,7 @@ public class driver {
 		readMatrcies.printBothArrays();
 
 		MatrixMultiplication inputMatrices = new MatrixMultiplication(readMatrcies.getMatrixA(),readMatrcies.getMatrixB(), ConvertToDecimal(n));
-		int[][] iterativeResults = inputMatrices.IterativeMultiplication();
+		int[][] iterativeResults = inputMatrices.IterativeMultiplication(readMatrcies.getMatrixA(),readMatrcies.getMatrixB(),ConvertToDecimal(n));
 		System.out.println("IterativeMultiplication");
 		for (int i = 0; i < iterativeResults.length; i++) {
 			for (int j = 0; j < iterativeResults[i].length; j++) {
@@ -40,18 +40,9 @@ public class driver {
 		System.out.println("Enter a B > 1 for the strassen:");
 
 		int b = kb.nextInt();
-		
-//		int[][] strassenResults = inputMatrices.Strassen(readMatrcies.getMatrixA(),readMatrcies.getMatrixB(), b);
-//		readMatrcies.setMatrixC(strassenResults);
-//		System.out.println("Strassen");
-//		for (int i = 0; i < strassenResults.length; i++) {
-//			for (int j = 0; j < strassenResults[i].length; j++) {
-//				System.out.print(strassenResults[i][j] + "\t");
-//			}
-//			System.out.println();
-//		}
-//		readMatrcies.printMatrixC();
 		int[][] strassenB1Results = inputMatrices.StrassenB1(readMatrcies.getMatrixA(),readMatrcies.getMatrixB());
+		
+		
 		readMatrcies.setMatrixC(strassenB1Results);
 		System.out.println("StrassenB1");
 		readMatrcies.printMatrixC();
@@ -62,6 +53,22 @@ public class driver {
 			}
 			System.out.println();
 		}
+		
+		
+		////
+		int[][] strassenResults = inputMatrices.Strassen(readMatrcies.getMatrixA(),readMatrcies.getMatrixB(), b);
+		readMatrcies.setMatrixC(strassenResults);
+		System.out.println("Strassen");
+		for (int i = 0; i < strassenResults.length; i++) {
+			for (int j = 0; j < strassenResults[i].length; j++) {
+				System.out.print(strassenResults[i][j] + "\t");
+			}
+			System.out.println();
+		}
+		readMatrcies.printMatrixC();
+		
+		
+		readMatrcies.printBothArrays();
 		
 	}
 

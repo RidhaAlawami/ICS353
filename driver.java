@@ -25,7 +25,7 @@ public class driver {
 
 		readMatrcies.printBothArrays();
 
-		MatrixMultiplication inputMatrices = new MatrixMultiplication(readMatrcies.getMatrixA(),readMatrcies.getMatrixB(), ConvertToDecimal(n));
+		MatrixMultiplication inputMatrices = new MatrixMultiplication();
 		int[][] iterativeResults = inputMatrices.IterativeMultiplication(readMatrcies.getMatrixA(),readMatrcies.getMatrixB(),ConvertToDecimal(n));
 		System.out.println("IterativeMultiplication");
 		for (int i = 0; i < iterativeResults.length; i++) {

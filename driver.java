@@ -55,8 +55,8 @@ public class driver {
 //		System.out.println();
 		
 		//The padding step for strassens' functions
+		//result true if it is a power of 2
 		boolean result = n > 0 && ((n & (n - 1)) == 0);
-		System.out.println(result);
 		if(result) {
 			paddedMatrices = readMatrcies;
 		}
@@ -68,6 +68,10 @@ public class driver {
 		
 		System.out.println("Enter a B > 1 for the strassen:");
 		int b = kb.nextInt();
+		if(b <= 1) {
+			System.out.println("Invalid b value aborting.");
+			System.exit(0);
+		}
 		long strassenB1StartTime = System.nanoTime();
 		int[][] strassenB1Results = inputMatrices.StrassenB1(paddedMatrices.getMatrixA(), paddedMatrices.getMatrixB());
 		long strassenB1EndTime = System.nanoTime();
@@ -84,21 +88,21 @@ public class driver {
 		
 		matrixModificationsC = new MatrixModifications(strassenB1Results);
 		paddedMatrices.setMatrixC(matrixModificationsC.RemovePadding());
-		System.out.println("StrassenB1");
-		paddedMatrices.printMatrixC();
+//		System.out.println("StrassenB1");
+//		paddedMatrices.printMatrixC();
 		
-		for (int i = 0; i < strassenB1Results.length; i++) {
-			for (int j = 0; j < strassenB1Results[i].length; j++) {
-				System.out.print(strassenB1Results[i][j] + "\t");
-			}
-			System.out.println();
-		}	
+//		for (int i = 0; i < strassenB1Results.length; i++) {
+//			for (int j = 0; j < strassenB1Results[i].length; j++) {
+//				System.out.print(strassenB1Results[i][j] + "\t");
+//			}
+//			System.out.println();
+//		}	
 
 		long strassenStartTime = System.nanoTime();
 		int[][] strassenResults = inputMatrices.Strassen(paddedMatrices.getMatrixA(), paddedMatrices.getMatrixB(), b);
 		long strassenEndTime = System.nanoTime();
 		long strassenTotalTime = iterativeEndTime - iterativeStartTime;
-		System.out.println("StrassenB1 Multiplication took: " + strassenTotalTime / (Math.pow(10, 6)));
+		System.out.println("Strassen Multiplication took: " + strassenTotalTime / (Math.pow(10, 6)));
 		
 		try {
 			writeToFile("Strassen results of " + " Base " + b, "Strassen", strassenResults, n);
@@ -108,15 +112,15 @@ public class driver {
 			e.printStackTrace();
 		}
 
-		paddedMatrices.setMatrixC(strassenResults);
-		System.out.println("Strassen");
-		for (int i = 0; i < strassenResults.length; i++) {
-			for (int j = 0; j < strassenResults[i].length; j++) {
-				System.out.print(strassenResults[i][j] + "\t");
-			}
-			System.out.println();
-		}
-		paddedMatrices.printMatrixC();
+//		paddedMatrices.setMatrixC(strassenResults);
+//		System.out.println("Strassen");
+//		for (int i = 0; i < strassenResults.length; i++) {
+//			for (int j = 0; j < strassenResults[i].length; j++) {
+//				System.out.print(strassenResults[i][j] + "\t");
+//			}
+//			System.out.println();
+//		}
+//		paddedMatrices.printMatrixC();
 
 	}
 

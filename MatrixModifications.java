@@ -1,27 +1,36 @@
 
 public class MatrixModifications {
 
-	private static int matrix_size_before_padding;
+	private int matrix_size_before_padding;
+	private int[][] my_matrix;
+
+	public MatrixModifications(int[][] matrix) {
+		this.my_matrix = matrix;
+	}
+
+	public MatrixModifications() {
+		// TODO Auto-generated constructor stub
+	}
 
 	// This methods adds a padding factor using GetPaddingFactor to the matrix row
 	// and column.
 	// and returns a new matrix
 	// assuming the input is a matrix.
-	public int[][] AddPadding(int[][] matrix) {
+	public int[][] AddPadding() {
 		int[][] my_padded_matrix = null;
-		if (matrix == null || matrix.length == 0)
-			return matrix;
+		if (my_matrix == null || my_matrix.length == 0)
+			return my_matrix;
 
 		else {
 			// to be used in RemovePadding
-			matrix_size_before_padding = matrix.length;
-			int matrix_size = NextPowerOfTwo(matrix.length);
+			matrix_size_before_padding = my_matrix.length;
+			int matrix_size = NextPowerOfTwo(my_matrix.length);
 
 			my_padded_matrix = new int[matrix_size][matrix_size];
 
-			for (int i = 0; i < matrix.length; i++) {
-				for (int j = 0; j < matrix[i].length; j++) {
-					my_padded_matrix[i][j] = matrix[i][j];
+			for (int i = 0; i < my_matrix.length; i++) {
+				for (int j = 0; j < my_matrix.length; j++) {
+					my_padded_matrix[i][j] = my_matrix[i][j];
 				}
 			}
 		}
@@ -33,10 +42,10 @@ public class MatrixModifications {
 	// and column.
 	// and returns a new matrix
 	// assuming the input is a matrix.
-	public int[][] RemovePadding(int[][] matrix) {
+	public int[][] RemovePadding() {
 		int[][] my_unpadded_matrix = null;
-		if (matrix == null || matrix.length == 0)
-			return matrix;
+		if (my_matrix == null || my_matrix.length == 0)
+			return my_matrix;
 
 		else {
 			int matrix_size = matrix_size_before_padding;
@@ -44,7 +53,7 @@ public class MatrixModifications {
 			my_unpadded_matrix = new int[matrix_size][matrix_size];
 			for (int i = 0; i < matrix_size; i++) {
 				for (int j = 0; j < matrix_size; j++) {
-					my_unpadded_matrix[i][j] = matrix[i][j];
+					my_unpadded_matrix[i][j] = my_matrix[i][j];
 				}
 			}
 		}
@@ -52,7 +61,7 @@ public class MatrixModifications {
 	}
 
 	// closet 2^x number to a given input
-	private static int NextPowerOfTwo(int n) {
+	public static int NextPowerOfTwo(int n) {
 
 		int closestNumber = 0;
 

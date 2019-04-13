@@ -75,7 +75,8 @@ public class driver {
 		long strassenB1StartTime = System.nanoTime();
 		int[][] strassenB1Results = inputMatrices.StrassenB1(paddedMatrices.getMatrixA(), paddedMatrices.getMatrixB());
 		long strassenB1EndTime = System.nanoTime();
-		long strassenB1TotalTime = iterativeEndTime - iterativeStartTime;
+		long strassenB1TotalTime = strassenB1EndTime - strassenB1StartTime;
+		
 		System.out.println("StrassenB1 Multiplication took: " + strassenB1TotalTime / (Math.pow(10, 6)));
 		
 		try {
@@ -101,7 +102,9 @@ public class driver {
 		long strassenStartTime = System.nanoTime();
 		int[][] strassenResults = inputMatrices.Strassen(paddedMatrices.getMatrixA(), paddedMatrices.getMatrixB(), b);
 		long strassenEndTime = System.nanoTime();
-		long strassenTotalTime = iterativeEndTime - iterativeStartTime;
+		long strassenTotalTime = strassenEndTime - strassenStartTime;
+		
+		
 		System.out.println("Strassen Multiplication took: " + strassenTotalTime / (Math.pow(10, 6)));
 		
 		try {

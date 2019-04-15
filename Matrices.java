@@ -40,10 +40,9 @@ final class Matrices {
 		printMatrixB();
 	}
 
-	public int[][] AddPadding(int[][] matrix) {
+	public int[][] AddPadding(int[][] matrix, int matrixSize) {
 		int[][] my_padded_matrix = null;
-		int matrix_size = NextPowerOfTwo(matrix.length);
-		my_padded_matrix = new int[matrix_size][matrix_size];
+		my_padded_matrix = new int[matrixSize][matrixSize];
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[i].length; j++) {
 				my_padded_matrix[i][j] = matrix[i][j];
@@ -52,30 +51,18 @@ final class Matrices {
 		return my_padded_matrix;
 	}
 
-	public int[][] RemovePadding(int[][] my_padded_matrix) {
+	public int[][] RemovePadding(int[][] my_padded_matrix, int matrixSize) {
 		int[][] my_unpadded_matrix = null;
-		int matrix_size = this.getMatrixA().length;
 		
-		my_unpadded_matrix = new int[matrix_size][matrix_size];
-		for (int i = 0; i < matrix_size; i++) {
-			for (int j = 0; j < matrix_size; j++) {
+		my_unpadded_matrix = new int[matrixSize][matrixSize];
+		for (int i = 0; i < matrixSize; i++) {
+			for (int j = 0; j < matrixSize; j++) {
 				my_unpadded_matrix[i][j] = my_padded_matrix[i][j];
 			}
 		}
 		return my_unpadded_matrix;
 	}
 
-	private static int NextPowerOfTwo(int n) {
 
-		int closestNumber = 0;
-
-		double log2n = Math.log(n) / Math.log(2);
-
-		double power = Math.ceil(log2n);
-
-		closestNumber = (int) Math.pow(2, power);
-
-		return closestNumber;
-	}
 
 }

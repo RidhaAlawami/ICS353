@@ -1,206 +1,173 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class driver {
-	public static void main(String[] args) {
-		int n;
-		String input_file_name = "";
-		Scanner kb = new Scanner(System.in);
-		System.out.println("Input format: n *ENTER* InputFileName.txt");
-		System.out.println("For example: 1011 \ninput_file_name.txt");
-		n = kb.nextInt();
-		input_file_name = kb.next();
+	public static void main(String[] args) throws IOException {
+		
+		
+		Matrices Matrices;
+		MatrixMultiplication multiplication = new MatrixMultiplication();
+		ReadAndWriteFiles readAndWrite = new ReadAndWriteFiles();
+		String input;
+		int t, b;
+		String n, inputFile, outputFile;
+		boolean valid = true ;
+		boolean powerOf2 = true;
+		int matrixSize;
+		int [][] matrixC;
+		
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("input should be --> matrixMultiply t n b input_filename output_filename");
+		System.out.println("Note that input and output should be given"
+				+ " in the form of text files and the parameters \n t (multiplication algorithm:0 for iterative and 1 for Strassen’s),\n"
+				+ " n (matrix dimensions),\n b (Strassen’s base case dimension)");
+		System.out.println("For example: matrixMultiply 0 1011 0 input.txt output.txt");
 
-		// get matrix A and matrix B
-		Matrices readMatrcies = matrix(ConvertToDecimal(n), input_file_name);
+		while(true){
+				System.out.print("input: ");
+				input = scanner.nextLine(); 
 		
-		// if needed
-		Matrices paddedMatrices;
+				String [] inputValues = input.split(" ");
+				
+				if(inputValues.length < 6){
+					valid = false;
+					System.out.println("wrong input, try again");
+				}
+				else 
+					valid = true;
+				
+	
 		
-//		readMatrcies.printBothArrays();
+				if(valid){
+					t = Integer.parseInt(inputValues[1]);
+					n = inputValues[2];
+					b = Integer.parseInt(inputValues[3]);
+					
+					inputFile = inputValues[4];
+					outputFile = inputValues[5];
+					
+					valid = checkInput(t,n,inputFile,outputFile);
+				
+					if(!valid){
+						System.out.println("wrong input, try again");
+					}
+					else{
+						break;
+					}
+				}
+				
 		
 		
-		MatrixMultiplication inputMatrices = new MatrixMultiplication();
-		MatrixModifications matrixModificationsA, matrixModificationsB, matrixModificationsC;
-
+		}
+		//get the size as integer 
+		matrixSize = ConvertToDecimal(Integer.parseInt(n));
+		
+		//read the matrcies 
+		Matrices = readAndWrite.readMatrices(matrixSize, inputFile);
 		
 		
-		long iterativeStartTime = System.nanoTime();
-		int[][] iterativeResults = inputMatrices.IterativeMultiplication(readMatrcies.getMatrixA(),
-				readMatrcies.getMatrixB(), ConvertToDecimal(n));
-		long iterativeEndTime = System.nanoTime();
-		long iterativeTotalTime = iterativeEndTime - iterativeStartTime;
-		System.out.println("Iterative Multiplication took: " + iterativeTotalTime / (Math.pow(10, 6)));
-		
-		//Write output to file.
-		try {
-			writeToFile("Iterative results ", "IterativeMultiplication", iterativeResults, n);
-			writeTimeToFile("Iterative results time", "IterativeMultiplication", iterativeTotalTime);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(!isPowerOfTwo(matrixSize)){
+			powerOf2 = false;
+		}
+		if(!powerOf2){
+			
+			matrixSize = NextPowerOfTwo(matrixSize);
+			int [][] newMatrixA = Matrices.AddPadding(Matrices.getMatrixA(), matrixSize);
+			Matrices.setMatrixA(newMatrixA);
+			
+			int [][] newMatrixB = Matrices.AddPadding(Matrices.getMatrixB(), matrixSize);
+			Matrices.setMatrixB(newMatrixB);
 		}
 		
-//		System.out.println("IterativeMultiplication Results:");
-//		for (int i = 0; i < iterativeResults.length; i++) {
-//			for (int j = 0; j < iterativeResults[i].length; j++) {
-//				System.out.print(iterativeResults[i][j] + "\t");
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
 		
-		//The padding step for strassens' functions
-		//result true if it is a power of 2
+		//multiplication of matrices 
+		
+		if( t == 0){
+			matrixC = multiplication.IterativeMultiplication(Matrices.getMatrixA(), Matrices.getMatrixB());
+			Matrices.setMatrixC(matrixC);
+		}
+		else if( t == 1 && b == 0){
+			matrixC = multiplication.StrassenB1(Matrices.getMatrixA(), Matrices.getMatrixB());
+			Matrices.setMatrixC(matrixC);
+		}
+		else{
+			matrixC = multiplication.Strassen(Matrices.getMatrixA(), Matrices.getMatrixB(),b);
+			Matrices.setMatrixC(matrixC);
+		}
+		
+		
+		//remove padding if there
+		if(!powerOf2){
+			matrixC = Matrices.RemovePadding(matrixC, matrixSize);
+			Matrices.setMatrixC(matrixC);
+			powerOf2 = true;
+		}
+		
+		//write result to file 
+		matrixSize = ConvertToDecimal(Integer.parseInt(n));
+		if( t == 0){
+			readAndWrite.writeToFile(outputFile, Matrices.getMatrixC(), matrixSize, "iterative");
+		}
+		else if( t == 1 && b == 0){
+			readAndWrite.writeToFile(outputFile, Matrices.getMatrixC(), matrixSize, "StrassenB1");
+		}
+		else{
+			readAndWrite.writeToFile(outputFile, Matrices.getMatrixC(), matrixSize, "Strassen");
+		}
+		
+		System.out.println("Multiplication is Done.");
+		
+		
+	}
+
+	private static boolean checkInput(int t, String n, String inputFile, String outputFile ){
+		boolean validity = false;
+	
+		if(t == 1 || t == 0)
+			return validity = true;
+		
+		if (n.matches("[01]+") && !n.startsWith("0")) 
+			return validity = true;
+			
+		
+		String []input = inputFile.split(".");
+		String []output = outputFile.split(".");
+		
+		if(input[1].equals("txt"))
+			return validity = true;
+		
+		if(output[1].equals("txt"))
+			return validity = true;
+		
+		
+		return validity;
+	}
+	
+	private static boolean isPowerOfTwo(int n){
+		
 		boolean result = n > 0 && ((n & (n - 1)) == 0);
-		if(result) {
-			paddedMatrices = readMatrcies;
-		}
-		else {
-			matrixModificationsA = new MatrixModifications(readMatrcies.getMatrixA());
-			matrixModificationsB = new MatrixModifications(readMatrcies.getMatrixB());
-			paddedMatrices = new Matrices(matrixModificationsA.AddPadding(), matrixModificationsB.AddPadding());
-		}
-		
-		System.out.println("Enter a B > 1 for the strassen:");
-		int b = kb.nextInt();
-		if(b <= 1) {
-			System.out.println("Invalid b value aborting.");
-			System.exit(0);
-		}
-		long strassenB1StartTime = System.nanoTime();
-		int[][] strassenB1Results = inputMatrices.StrassenB1(paddedMatrices.getMatrixA(), paddedMatrices.getMatrixB());
-		long strassenB1EndTime = System.nanoTime();
-		long strassenB1TotalTime = strassenB1EndTime - strassenB1StartTime;
-		
-		System.out.println("StrassenB1 Multiplication took: " + strassenB1TotalTime / (Math.pow(10, 6)));
-		
-		try {
-			writeToFile("StrassenB1 results ", "StrassenB1", strassenB1Results, n);
-			writeTimeToFile("StrassenB1 results time", "StrassenB1", strassenB1TotalTime);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		matrixModificationsC = new MatrixModifications(strassenB1Results);
-		paddedMatrices.setMatrixC(matrixModificationsC.RemovePadding());
-//		System.out.println("StrassenB1");
-//		paddedMatrices.printMatrixC();
-		
-//		for (int i = 0; i < strassenB1Results.length; i++) {
-//			for (int j = 0; j < strassenB1Results[i].length; j++) {
-//				System.out.print(strassenB1Results[i][j] + "\t");
-//			}
-//			System.out.println();
-//		}	
-
-		long strassenStartTime = System.nanoTime();
-		int[][] strassenResults = inputMatrices.Strassen(paddedMatrices.getMatrixA(), paddedMatrices.getMatrixB(), b);
-		long strassenEndTime = System.nanoTime();
-		long strassenTotalTime = strassenEndTime - strassenStartTime;
 		
 		
-		System.out.println("Strassen Multiplication took: " + strassenTotalTime / (Math.pow(10, 6)));
-		
-		try {
-			writeToFile("Strassen results of " + " Base " + b, "Strassen", strassenResults, n);
-			writeTimeToFile("Strassen results time", "Strassen", strassenTotalTime);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-//		paddedMatrices.setMatrixC(strassenResults);
-//		System.out.println("Strassen");
-//		for (int i = 0; i < strassenResults.length; i++) {
-//			for (int j = 0; j < strassenResults[i].length; j++) {
-//				System.out.print(strassenResults[i][j] + "\t");
-//			}
-//			System.out.println();
-//		}
-//		paddedMatrices.printMatrixC();
-
+		return result;
 	}
+	private static int NextPowerOfTwo(int n) {
 
-	// get the matrices from the file
-	public static Matrices matrix(int n, String input_file_name) {
-		int[][] matrixA = new int[n][n];
-		int[][] matrixB = new int[n][n];
+		int closestNumber = 0;
 
-		try {
-			Scanner inputFile = new Scanner(new File(input_file_name));
-			int i = 0;
-			int counter = 0;
-			boolean middle = false;
-			while (counter < n * 2) {
-				if (counter < n) {
-					for (int j = 0; j < n; j++) {
-						matrixA[i][j] = inputFile.nextInt();
-					}
+		double log2n = Math.log(n) / Math.log(2);
 
-					i++;
-					counter++;
-				}
+		double power = Math.ceil(log2n);
 
-				else if (counter >= n) {
-					if (!middle) {
-						i = 0;
-						middle = true;
-					}
-					for (int j = 0; j < n; j++) {
-						matrixB[i][j] = inputFile.nextInt();
-					}
-					i++;
-					counter++;
-				}
-			}
+		closestNumber = (int) Math.pow(2, power);
 
-			inputFile.close();
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Could not find a file named " + input_file_name);
-		}
-
-		return new Matrices(matrixA, matrixB);
+		return closestNumber;
 	}
-
-	// write the result to file
-	public static void writeToFile(String fileName, String functionName, int matrixC[][], int n) throws IOException {
-
-		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-		writer.write(functionName + " matrix multiplication result of " + n + "*" + ":\n");
-		writer.newLine();
-
-		// print the matrixC as
-		/*
-		 * 2 * 2 matrix 1 2 4 5
-		 * 
-		 */
-		for (int row = 0; row < n; row++) {
-			for (int column = 0; column < n; column++) {
-				writer.write(matrixC[row][column] + " ");
-			}
-			writer.newLine();
-		}
-		writer.close();
-
-	}
-
-	public static void writeTimeToFile(String fileName, String functionName, long time) throws IOException {
-
-		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-		double timeInSeconds = time / Math.pow(10, 6);
-		writer.write(functionName + " took " + timeInSeconds + " seconds" + ":\n");
-
-		writer.close();
-	}
-
 	// convert binary to decimal
 	private static int ConvertToDecimal(int n) {
 

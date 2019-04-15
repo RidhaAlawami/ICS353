@@ -6,7 +6,8 @@ public class MatrixMultiplication {
 	
 	
 	// matrix iterative
-	public int[][] IterativeMultiplication(int [][] matrixA, int [][] matrixB, int n) {
+	public int[][] IterativeMultiplication(int [][] matrixA, int [][] matrixB) {
+		int n = matrixA.length;
 		int [][] matrixC = new int[n][n];
 		for (int row = 0; row < n; row++) {
 			for (int column = 0; column < n; column++) {
@@ -107,7 +108,7 @@ public class MatrixMultiplication {
 		int [][] matrixC = new int[n][n];
 		
 		if (n <= baseCase)
-			matrixC = IterativeMultiplication(matrixA,matrixB,n);
+			matrixC = IterativeMultiplication(matrixA,matrixB);
 		else {
 			//step 1
 			//matrix A

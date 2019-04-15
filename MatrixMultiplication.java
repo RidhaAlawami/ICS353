@@ -64,10 +64,10 @@ public class MatrixMultiplication {
 			//create 10 matrices 
 			int[][] S1 = subtract(B12, B22);
 			int[][] S2 = add(A11, A12);
-			int[][] S3 = add(A21, A22); //here * B11
+			int[][] S3 = add(A21, A22); 
 			int[][] S4 = subtract(B21, B11);
-			int[][] S5 = add(A11, A22); //here
-			int[][] S6 = add(B11, B22); //here - S5 * S6
+			int[][] S5 = add(A11, A22); 
+			int[][] S6 = add(B11, B22); 
 			int[][] S7 = subtract(A12, A22);
 			int[][] S8 = add(B21, B22);
 			int[][] S9 = subtract(A21, A11);
@@ -230,22 +230,5 @@ public class MatrixMultiplication {
                 original[row2][column2] = split[row][column];
     } 
 
-//
-//	// split matrix
-//	private void split(int[][] original, int[][] split, int rowSplit, int columnSplit) {
-//		for (int row = 0, row2 = rowSplit; row < split.length; row++, row2++)
-//			for (int column = 0, column2 = columnSplit; column < split.length; column++, column2++) {
-//				split[row][column] = original[row2][column2];
-//			}
-//	}
-//
-//	// join matrices
-//	private void join(int[][] split, int[][] original, int rowSplit, int columnSplit) {
-//		for (int row = 0, row2 = rowSplit; row < split.length; row++, row2++){
-//			for (int column = 0, column2 = columnSplit; column < split.length; column++, column2++) {
-//				original[row2][column2] = split[row][column];
-//			}
-//		}
-//	}
 
 }

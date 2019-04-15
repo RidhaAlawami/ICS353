@@ -14,7 +14,7 @@ public class TimeTester {
 		int [][] matrixC;
 		
 		//iterative results 
-		for( int i = 30; i < 110; i++){
+		for( int i = 30; i < 607; i++){
 
 			inputFile = "matrices/Matrix"+i+".txt";
 			Matrices = readAndWrite.readMatrices(i, inputFile);
@@ -46,7 +46,7 @@ public class TimeTester {
 		}
 		System.out.println("done");
 		//Strassen b1 results 
-				for( int i = 30; i < 110; i++){
+				for( int i = 30; i < 607; i++){
 					inputFile = "matrices/Matrix"+i+".txt";
 					Matrices = readAndWrite.readMatrices(i, inputFile);
 					
@@ -76,9 +76,9 @@ public class TimeTester {
 				
 				}
 				System.out.println("done");
-				//strassen b1 results 
+				//strassen  results 
 				for(int b = 2; b < 256; b++){
-					for( int i = 30; i < 110; i++){
+					for( int i = 30; i < 316; i++){
 						inputFile = "matrices/Matrix"+i+".txt";
 						Matrices = readAndWrite.readMatrices(i, inputFile);
 						

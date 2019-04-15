@@ -106,9 +106,9 @@ public class ReadAndWriteFiles {
 	
 	public  void writeTimeToFile(String fileName, String functionName,int size, double time) throws IOException {
 
-		BufferedWriter writer = new BufferedWriter(new FileWriter("results/"+fileName,true));
+		BufferedWriter writer = new BufferedWriter(new FileWriter("results2/"+fileName,true));
 		writer.append(functionName + " size  "+size+" took " + time + " seconds" + ":\n");
-
+		//writer.append( time +"\n");
 		writer.close();
 	}
 

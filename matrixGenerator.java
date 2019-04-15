@@ -16,7 +16,7 @@ public class matrixGenerator {
 		 * 2 * 2 matrix 1 2 4 5
 		 * 
 		 */
-		for(int n = 30; n < 400; n++){
+		for(int n = 30; n < 1501; n++){
 			BufferedWriter writer = new BufferedWriter(new FileWriter("matrices/Matrix"+n+".txt"));
 			for (int row = 0; row < n; row++) {
 				for (int column = 0; column < n; column++) {

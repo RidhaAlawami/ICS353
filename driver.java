@@ -72,18 +72,7 @@ public class driver {
 		Matrices = readAndWrite.readMatrices(matrixSize, inputFile);
 		
 		
-		if(!isPowerOfTwo(matrixSize)){
-			powerOf2 = false;
-		}
-		if(!powerOf2){
-			
-			matrixSize = NextPowerOfTwo(matrixSize);
-			int [][] newMatrixA = Matrices.AddPadding(Matrices.getMatrixA(), matrixSize);
-			Matrices.setMatrixA(newMatrixA);
-			
-			int [][] newMatrixB = Matrices.AddPadding(Matrices.getMatrixB(), matrixSize);
-			Matrices.setMatrixB(newMatrixB);
-		}
+
 		
 		
 		//multiplication of matrices 
@@ -93,16 +82,44 @@ public class driver {
 			Matrices.setMatrixC(matrixC);
 		}
 		else if( t == 1 && b == 0){
+			//padding if not square power of two
+			if(!isPowerOfTwo(matrixSize)){
+				powerOf2 = false;
+			}
+			if(!powerOf2){
+				
+				matrixSize = NextPowerOfTwo(matrixSize);
+				int [][] newMatrixA = Matrices.AddPadding(Matrices.getMatrixA(), matrixSize);
+				Matrices.setMatrixA(newMatrixA);
+				
+				int [][] newMatrixB = Matrices.AddPadding(Matrices.getMatrixB(), matrixSize);
+				Matrices.setMatrixB(newMatrixB);
+			}
+			//Multiplying here 
 			matrixC = multiplication.StrassenB1(Matrices.getMatrixA(), Matrices.getMatrixB());
 			Matrices.setMatrixC(matrixC);
 		}
 		else{
+			//padding if not square power of two
+			if(!isPowerOfTwo(matrixSize)){
+				powerOf2 = false;
+			}
+			if(!powerOf2){
+				
+				matrixSize = NextPowerOfTwo(matrixSize);
+				int [][] newMatrixA = Matrices.AddPadding(Matrices.getMatrixA(), matrixSize);
+				Matrices.setMatrixA(newMatrixA);
+				
+				int [][] newMatrixB = Matrices.AddPadding(Matrices.getMatrixB(), matrixSize);
+				Matrices.setMatrixB(newMatrixB);
+			}
+			//Multiplying  
 			matrixC = multiplication.Strassen(Matrices.getMatrixA(), Matrices.getMatrixB(),b);
 			Matrices.setMatrixC(matrixC);
 		}
 		
 		
-		//remove padding if there
+		//remove padding if there is one
 		if(!powerOf2){
 			matrixC = Matrices.RemovePadding(matrixC, matrixSize);
 			Matrices.setMatrixC(matrixC);
@@ -149,6 +166,7 @@ public class driver {
 		return validity;
 	}
 	
+
 	private static boolean isPowerOfTwo(int n){
 		
 		boolean result = n > 0 && ((n & (n - 1)) == 0);

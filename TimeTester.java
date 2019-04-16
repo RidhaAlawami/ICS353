@@ -50,21 +50,6 @@ public class TimeTester {
 					inputFile = "matrices/Matrix"+i+".txt";
 					Matrices = readAndWrite.readMatrices(i, inputFile);
 					
-					
-					if(!isPowerOfTwo(i)){
-						powerOf2 = false;
-					}
-					if(!powerOf2){
-						
-						matrixSize = NextPowerOfTwo(i);
-						int [][] newMatrixA = Matrices.AddPadding(Matrices.getMatrixA(), matrixSize);
-						Matrices.setMatrixA(newMatrixA);
-						
-						int [][] newMatrixB = Matrices.AddPadding(Matrices.getMatrixB(), matrixSize);
-						Matrices.setMatrixB(newMatrixB);
-					}
-					
-					
 					//multiplication of matrices strassenB1 
 					long start = System.currentTimeMillis();
 					matrixC = multiplication.StrassenB1(Matrices.getMatrixA(), Matrices.getMatrixB());
